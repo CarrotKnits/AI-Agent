@@ -27,7 +27,7 @@ def files_info_string(target_directory):
             else:
                 size_display = f"{size_result} bytes"
 
-            contents_list.append(f"- {content}: file_size={size_display} bytes, is_dir={os.path.isdir(os.path.join(target_directory, content))}")
+            contents_list.append(f"- {content}: file_size={size_display}, is_dir={os.path.isdir(os.path.join(target_directory, content))}")
         return "\n".join(contents_list)
 
 def get_files_info(working_directory, directory=None):
