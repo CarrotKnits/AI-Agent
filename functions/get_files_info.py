@@ -31,7 +31,6 @@ def files_info_string(target_directory):
         return "\n".join(contents_list)
 
 def get_files_info(working_directory, directory=None):
-    # absolute_path = None # Is it neccessary to declare the absolute_path variable now?
     # If directory == None, continue with working directory
     if directory == None:
         target_directory = os.path.abspath(working_directory)
