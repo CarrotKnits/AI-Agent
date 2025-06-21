@@ -29,10 +29,10 @@ def run_python_file(working_directory, file_path):
                 return output
             
             else:
-                f'Error: "{file_path}" is not a Python file.'
+                return f'Error: "{file_path}" is not a Python file.'
 
         else:
-            f'Error: File "{file_path}" not found.'
+            return f'Error: File "{file_path}" not found.'
 
     else:
         return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
