@@ -1,8 +1,8 @@
-from functions.run_python import run_python_file
+from functions.get_files_info import *
 
 if __name__ == "__main__":
-    print(run_python_file("calculator", "main.py"))
-    print(run_python_file("calculator", "tests.py"))
-    print(run_python_file("calculator", "../main.py")) # this should return an error
-    print(run_python_file("calculator", "nonexistent.py")) # this should return an error
+    print(get_files_info("calculator", "."))
+    print(get_files_info("calculator", "pkg"))
+    print(get_files_info("calculator", "/bin")) # this should return an error
+    print(get_files_info("calculator", "../")) # this should return an error
     
