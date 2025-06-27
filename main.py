@@ -3,11 +3,24 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-
+from functions.get_file_content import *
+from functions.get_files_info import *
+from functions.write_file import *
+from functions.run_python import *
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
+
+def function_call_tree(function_call_part):
+    if function_call_tree == "get_files_info":
+        get_files_info()
+    elif function_call_part == "get_file_content":
+        get_file_content()
+    elif function_call_part == "write_file":
+        write_file()
+    elif function_call_part == "run_python_file":
+        run_python_file()
 
 
 # Print error in case of no prompt provided
@@ -96,7 +109,78 @@ available_functions = types.Tool(
         schema_run_python_file
     ]
 )
+# If need to change working directory change it here
+working_directory = {"working_directory": "./calculator"}
 
+def function_call_branches(function_call_part):
+            if function_call_part.name == "get_files_info":
+                args_with_working_dir = {**function_call_part.args, **working_directory}
+                function_result = get_files_info(**args_with_working_dir)
+                return types.Content(
+                    role="tool",
+                    parts=[
+                        types.Part.from_function_response(
+                            name="get_files_info",
+                            response={"result": function_result},
+                        )
+                    ],
+                )
+            elif function_call_part.name == "get_file_content":
+                args_with_working_dir = {**function_call_part.args, **working_directory}
+                function_result = get_file_content(**args_with_working_dir)
+                return types.Content(
+                    role="tool",
+                    parts=[
+                        types.Part.from_function_response(
+                            name="get_file_content",
+                            response={"result": function_result},
+                        )
+                    ],
+                )
+            elif function_call_part.name == "write_file":
+                args_with_working_dir = {**function_call_part.args, **working_directory}
+                function_result = write_file(**args_with_working_dir)
+                return types.Content(
+                    role="tool",
+                    parts=[
+                        types.Part.from_function_response(
+                            name="write_file",
+                            response={"result": function_result},
+                        )
+                    ],
+                )
+            elif function_call_part.name == "run_python_file":
+                args_with_working_dir = {**function_call_part.args, **working_directory}
+                function_result = run_python_file(**args_with_working_dir)
+                return types.Content(
+                    role="tool",
+                    parts=[
+                        types.Part.from_function_response(
+                            name="run_python_file",
+                            response={"result": function_result},
+                        )
+                    ],
+                )
+            else:
+                return types.Content(
+                    role="tool",
+                    parts=[
+                        types.Part.from_function_response(
+                            name=function_call_part.name,
+                            response={"error": f"Unknown function: {function_call_part.name}"},
+                        )
+                    ],
+                )
+
+
+# Will have the AI agengt actually call a function from the available functions implemented in 'available_functionts'
+def call_function(function_call_part, verbose=False):
+    if verbose == True:
+        print(f"Calling function: {function_call_part.name}({function_call_part.args})")
+        return function_call_branches(function_call_part)
+    else:
+        print(f" - Calling function: {function_call_part.name}")
+        return function_call_branches(function_call_part)
 
 
 # Commandline arguments
@@ -116,9 +200,11 @@ response = client.models.generate_content(
     )
 )
 
+
+# Main program starts here
 if response.function_calls:
     for function_call in response.function_calls:
-        print(f"Calling function: {function_call.name}({function_call.args})")
+        call_function(function_call, sys.argv[2])
 else:
     # Print response to prompt
     print(response.text)
