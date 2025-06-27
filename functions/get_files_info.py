@@ -36,7 +36,7 @@ def get_files_info(working_directory, directory=None):
         target_directory = os.path.abspath(working_directory)
         return files_info_string(target_directory)
     else:
-        target_directory = os.path.abspath(directory)
+        target_directory = os.path.abspath(os.path.join(working_directory, directory))
         # Check if the directory input is in the working directory
         if target_directory.startswith(os.path.abspath(working_directory)):
             return files_info_string(target_directory)
