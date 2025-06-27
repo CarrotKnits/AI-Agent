@@ -202,15 +202,23 @@ response = client.models.generate_content(
 
 
 # Main program starts here
+verbose = "--verbose" in sys.argv[2:]
+
 if response.function_calls:
     for function_call in response.function_calls:
-        call_function(function_call, sys.argv[2])
+        function_call_result = call_function(function_call, verbose)
+        if not function_call_result.parts[0].function_response.response:
+            raise Exception("Function call result missing expected syntax.")
+        # Check function calls for --verbose flag
+        if verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
+        
 else:
     # Print response to prompt
     print(response.text)
 
-# If --verbose flag is added
-if "--verbose" in sys.argv[2:]:
+# Check prompt for --verbose flag
+if verbose:
     print(f"User prompt: {user_prompt}")
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}\nResponse tokens: {response.usage_metadata.candidates_token_count}")
 
