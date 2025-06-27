@@ -204,6 +204,7 @@ response = client.models.generate_content(
 # Main program starts here
 verbose = "--verbose" in sys.argv[2:]
 
+# Generate content
 if response.function_calls:
     for function_call in response.function_calls:
         function_call_result = call_function(function_call, verbose)
