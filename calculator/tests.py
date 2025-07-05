@@ -44,6 +44,18 @@ class TestCalculator(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.calculator.evaluate("+ 3")
 
+    def test_negative_numbers(self):
+        self.assertEqual(self.calculator.evaluate("-5 + 2"), -3)
+        self.assertEqual(self.calculator.evaluate("3 * -4"), -12)
+
+    def test_decimal_numbers(self):
+        self.assertEqual(self.calculator.evaluate("2.5 + 3.5"), 6)
+        self.assertEqual(self.calculator.evaluate("7.0 / 2.0"), 3.5)
+
+    def test_division_by_zero(self):
+        with self.assertRaises(ValueError):
+            self.calculator.evaluate("5 / 0")
+
 
 if __name__ == "__main__":
     unittest.main()

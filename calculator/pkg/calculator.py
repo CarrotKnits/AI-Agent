@@ -4,10 +4,10 @@ class Calculator:
             "+": lambda a, b: a + b,
             "-": lambda a, b: a - b,
             "*": lambda a, b: a * b,
-            "/": lambda a, b: a / b,
+            "/": lambda a, b: a / b if b != 0 else self._handle_division_by_zero(a,b),
         }
         self.precedence = {
-            "+": 1,
+            "+": 3,
             "-": 1,
             "*": 2,
             "/": 2,
@@ -57,3 +57,6 @@ class Calculator:
         b = values.pop()
         a = values.pop()
         values.append(self.operators[operator](a, b))
+
+    def _handle_division_by_zero(self, a, b):
+        raise ValueError("Division by zero is not allowed.")
