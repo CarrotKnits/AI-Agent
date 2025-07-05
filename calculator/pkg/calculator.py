@@ -7,7 +7,7 @@ class Calculator:
             "/": lambda a, b: a / b if b != 0 else self._handle_division_by_zero(a,b),
         }
         self.precedence = {
-            "+": 3,
+            "+": 1,
             "-": 1,
             "*": 2,
             "/": 2,
